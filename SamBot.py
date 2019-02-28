@@ -5,6 +5,7 @@ import discord
 import discordToken
 
 client = discord.Client()
+print("Starting...")
 
 @client.event
 async def on_ready():
@@ -36,9 +37,12 @@ Check out some of the cool things I can do!
 
 1. Look pretty
 2. Be an Absolute UNIT """)
+
     if message.content.startswith("$hello"):
         await message.channel.send("Hello {0.author.mention}".format(message))
+
     if message.content.startwith("$awaken"):
         await message.channel.send(""" YOU HAVE AWAKENED
 THE GREAT AND POWERFUL ME, howz u?""")
+
 client.run(discordToken.getToken())
