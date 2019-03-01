@@ -7,6 +7,7 @@ from urllib import parse
 from discord.ext import commands
 
 BOT_PREFIX = "$"
+startMessage = False
 
 # TODO Stocks, ?dow ?nyse cvs
 # TODO ?stats - # messages, number of new joins over time (Generate image and upload?)
@@ -25,6 +26,15 @@ print("Starting...")
 async def on_ready():
     print('Logged in as {0.user}'.format(client))
     await client.change_presence(game = discord.Game(name = "with your hearts"))
+    if startMessage:
+        for server in client.servers:
+            for channel in server.channels:
+                if channel.permissions_for(server.me).send_messages:
+                    try:
+                        await client.send_message(channel, "SamBot online, ready to go! Type $help to see what I can do.")
+                        break
+                    except:
+                        continue
 
 @client.event
 async def on_member_join(member):
