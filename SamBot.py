@@ -1,11 +1,10 @@
 #Ted Clifford (c) 2.26.2019
 
-import discord
-import discordToken
+import discord, discordToken
 import aiohttp
 
 from urllib import parse
-from discord.ext.commands import Bot
+from discord.ext import commands
 
 BOT_PREFIX = "$"
 
@@ -16,16 +15,16 @@ BOT_PREFIX = "$"
 # TODO Define?
 # TODO fortune cookie
 # TODO !remind me
-# TODO On ready announce to server or to channel - I'm here to help! Just type ?help in the #help-desk channel.
+# TODO On ready announce to server or to channel - I'm here to help!
 # TODO news or feed command
 
-client = Bot(command_prefix = BOT_PREFIX)
+client = commands.Bot(command_prefix = BOT_PREFIX)
 print("Starting...")
 
 @client.event
 async def on_ready():
     print('Logged in as {0.user}'.format(client))
-    await client.change_presence(game = discord.Game(name = "SamBot"))
+    await client.change_presence(game = discord.Game(name = "with your hearts"))
 
 @client.event
 async def on_member_join(member):
@@ -58,17 +57,16 @@ async def bitcoin(context):
 
 @client.command(description = "Prints a test message.",
     brief = "Bot test",
-    alias = ["test"],
+    alias = ["t"],
     pass_context = True)
 async def test(context, *args):
-    await client.say("Hello world, {0.author.message}".format(context.author),
-        "You passed: {}".format(", ".join(args)))
+    await client.say("Hello world, {}".format(context.message.author.mention) + "\nYou passed: {}".format(", ".join(args)))
 
 @client.command(description = "Prints out the help message,",
     brief = "Help message",
-    alias = ['h', "?"],
+    alias = ["i"],
     pass_context = True)
-async def test(context):
+async def info(context):
     await client.say("""Hi, I'm SamBot
 Prefix your commands with a '$'
 Check out some of the cool things I can do!
