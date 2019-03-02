@@ -7,7 +7,7 @@ from urllib import parse
 from discord.ext import commands
 
 BOT_PREFIX = "$"
-startMessage = False
+start_message = True
 
 # TODO Stocks, ?dow ?nyse cvs
 # TODO ?stats - # messages, number of new joins over time (Generate image and upload?)
@@ -26,7 +26,8 @@ print("Starting...")
 async def on_ready():
     print('Logged in as {0.user}'.format(client))
     await client.change_presence(game = discord.Game(name = "with your hearts"))
-    if startMessage:
+
+    if start_message:
         for server in client.servers:
             for channel in server.channels:
                 if channel.permissions_for(server.me).send_messages:
@@ -57,6 +58,7 @@ async def on_message(message):
 @client.command(description = "Checks the current Bitcoin price in US Dollars from Coinbase.",
     brief = "Get current Bitcoin price",
     aliases = ["btc"],
+    category = "Commands",
     pass_context = True)
 async def bitcoin(context):
     url = 'https://api.coindesk.com/v1/bpi/currentprice/BTC.json'
@@ -68,13 +70,15 @@ async def bitcoin(context):
 @client.command(description = "Prints a test message.",
     brief = "Bot test",
     alias = ["t"],
+    category = "Commands",
     pass_context = True)
 async def test(context, *args):
     await client.say("Hello world, {}".format(context.message.author.mention) + "\nYou passed: {}".format(", ".join(args)))
 
-@client.command(description = "Prints out the help message,",
-    brief = "Help message",
+@client.command(description = "Prints out information about the bot and it's creator.",
+    brief = "Display bot information",
     alias = ["i"],
+    category = "Commands",
     pass_context = True)
 async def info(context):
     await client.say("""Hi, I'm SamBot
