@@ -64,7 +64,10 @@ async def price(context, symbol):
     async with aiohttp.ClientSession() as session:
         raw_response = await session.get(url)
         response = await raw_response.json()
-        await client.say("Current stock price of " + symbol + ": " + response["Time Series (5min)"][list(response[list(response.keys())[1]].keys())[0]]["4. close"])
+        if response:
+            await client.say("Current stock price of " + symbol + ": " + response["Time Series (5min)"][list(response[list(response.keys())[1]].keys())[0]]["4. close"])
+        else:
+            await client.say("I couldn't find a stock price for that symbol :/")
 
 @client.command(description = "Checks the current Bitcoin price in US Dollars from Coinbase.",
     brief = "Get current Bitcoin price",
