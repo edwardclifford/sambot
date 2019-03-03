@@ -9,7 +9,6 @@ from discord.ext import commands
 BOT_PREFIX = "$"
 start_message = True    #Set false when typing
 
-# TODO Stocks, ?dow ?nyse cvs
 # TODO ?stats - # messages, number of new joins over time (Generate image and upload?)
 # TODO add "Roll" for dice roll
 # TODO Weather?
@@ -54,7 +53,6 @@ async def on_message(message):
 
     if message.content.startswith(BOT_PREFIX):
         await client.process_commands(message)
-# https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=TSLA&interval=5min&apikey=00VKIV627UD97WIE
 
 @client.command(description = "Checks the current market price for the stock requested, type the trading symbol after $price",
     brief = "Get price for a share",
@@ -66,7 +64,7 @@ async def price(context, symbol):
     async with aiohttp.ClientSession() as session:
         raw_response = await session.get(url)
         response = await raw_response.json()
-        await client.say("Stock price of " + symbol + ": " + response["Time Series (5min)"][list(response[list(response.keys())[0]].keys())[0]]["4. close": "294.6600"])
+        await client.say("Current stock price of " + symbol + ": " + response["Time Series (5min)"][list(response[list(response.keys())[1]].keys())[0]]["4. close"])
 
 @client.command(description = "Checks the current Bitcoin price in US Dollars from Coinbase.",
     brief = "Get current Bitcoin price",
