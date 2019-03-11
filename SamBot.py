@@ -7,7 +7,7 @@ from urllib import parse
 from discord.ext import commands
 
 BOT_PREFIX = "$"
-start_message = True    #Set false when typing
+start_message = True    #Set false when testing
 
 # TODO ?stats - # messages, number of new joins over time (Generate image and upload?)
 # TODO add "Roll" for dice roll
@@ -15,8 +15,9 @@ start_message = True    #Set false when typing
 # TODO Define?
 # TODO fortune cookie
 # TODO !remind me
-# TODO On ready announce to server or to channel - I'm here to help!
 # TODO news or feed command
+# TODO let me google that for you (lmgtfy)
+# TODO poll tally function
 
 client = commands.Bot(command_prefix = BOT_PREFIX)
 print("Starting...")
@@ -54,10 +55,39 @@ async def on_message(message):
     if message.content.startswith(BOT_PREFIX):
         await client.process_commands(message)
 
-@client.command(description = "Checks the current market price for the stock requested, type the trading symbol after $price",
+@client.command(description = "Creates a poll based on a question and up to 10 options.",
+    brief = "Create a poll",
+    alias = ["p"],
+    pass_context = True)
+async def poll(context, question, *options: str):
+    if len(options) <= 1:
+        await client.say("You must enter more than one option.")
+        return
+    elif len(options) > 10:
+        await client.say("You cannot enter more than 10 options.")
+        return
+
+    if len(options) == 2 and options[0] == 'yes' and options[1] == 'no':
+        reactions = ['✅', '❌']
+    else:
+        reactions = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣', '🔟']
+
+    description = []
+    for x, option in enumerate(options):
+        description += '\n {} {}'.format(reactions[x], option)
+
+    embed = discord.Embed(title=question, description=''.join(description))
+    react_message = await client.say(embed=embed)
+
+    for reaction in reactions[:len(options)]:
+        await client.add_reaction(react_message, reaction)
+
+    # embed.set_footer(text='Poll ID: {}'.format(react_message.id))   For whenever you want to add a tally function
+    await client.edit_message(react_message, embed=embed)
+
+@client.command(description = "Checks the current market price for the stock requested.",
     brief = "Get price for a share",
     aliases = ["stock"],
-    category = "Commands",
     pass_context = True)
 async def price(context, symbol):
     url = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=' + symbol + '&interval=5min&apikey=00VKIV627UD97WIE'
@@ -72,7 +102,6 @@ async def price(context, symbol):
 @client.command(description = "Checks the current Bitcoin price in US Dollars from Coinbase.",
     brief = "Get current Bitcoin price",
     aliases = ["btc"],
-    category = "Commands",
     pass_context = True)
 async def bitcoin(context):
     url = 'https://api.coindesk.com/v1/bpi/currentprice/BTC.json'
@@ -84,7 +113,6 @@ async def bitcoin(context):
 @client.command(description = "Prints a test message.",
     brief = "Bot test",
     alias = ["t"],
-    category = "Commands",
     pass_context = True)
 async def test(context, *args):
     await client.say("Hello world, {}".format(context.message.author.mention) + "\nYou passed: {}".format(", ".join(args)))
@@ -92,7 +120,6 @@ async def test(context, *args):
 @client.command(description = "Prints out information about the bot and it's creator.",
     brief = "Display bot information",
     alias = ["i"],
-    category = "Commands",
     pass_context = True)
 async def info(context):
     await client.say("""Hi, I'm SamBot
