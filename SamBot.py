@@ -116,25 +116,32 @@ async def bitcoin(context):
     brief = "Creates balance",
     pass_context = True)
 async def snap(context):
-    server = context.message.server
-    members = list(server.members)
-    role = get(server.roles, name = "Snapped")
-    shuffle(members)
-    i = 0
-    while i < len(members)//2:
-        await client.add_roles(members[i], role)
-        i += 1
+    if context.message.author.server_permissions.administrator:
+        server = context.message.server
+        members = list(server.members)
+        role = get(server.roles, name = "Snapped")
+        shuffle(members)
+        i = 0
+        while i < len(members)//2:
+            await client.add_roles(members[i], role)
+            i += 1
+        await client.say("Perfectly balanced, as all things should be.")
+    else:
+        await client.say("You do not have all the infinity stones, {}.".format(context.message.author.mention))
 
 @client.command(description = "Undoes the snap",
     brief = "Creates chaos",
     pass_context = True)
 async def unsnap(context):
-    server = context.message.server
-    members = list(server.members)
-    role = get(server.roles, name = "Snapped")
-    for member in members:
-        if role in member.roles:
-            await client.remove_roles(member, role)
+    if context.message.author.server_permissions.administrator:
+        server = context.message.server
+        members = list(server.members)
+        role = get(server.roles, name = "Snapped")
+        for member in members:
+            if role in member.roles:
+                await client.remove_roles(member, role)
+    else:
+        await client.say("You do not have all the infinity stones, {}.".format(context.message.author.mention))
 
 @client.command(description = "Prints a test message.",
     brief = "Bot test",
