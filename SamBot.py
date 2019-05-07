@@ -5,6 +5,8 @@ import aiohttp
 
 from urllib import parse
 from discord.ext import commands
+from discord.utils import get
+from random import shuffle
 
 BOT_PREFIX = "$"
 start_message = False    #Set false when testing
@@ -25,7 +27,7 @@ print("Starting...")
 @client.event
 async def on_ready():
     print('Logged in as {0.user}'.format(client))
-    await client.change_presence(game = discord.Game(name = "with your hearts"))
+    await client.change_presence(game = discord.Game(name = "with the Ininity Stones"))
 
     if start_message:
         for server in client.servers:
@@ -109,6 +111,30 @@ async def bitcoin(context):
         raw_response = await session.get(url)
         response = await raw_response.json()
         await client.say("Bitcoin price is: $" + response['bpi']['USD']['rate'])
+
+@client.command(description = "Puts 50% of users in the 'Snapped' role",
+    brief = "Creates balance",
+    pass_context = True)
+async def snap(context):
+    server = context.message.server
+    members = list(server.members)
+    role = get(server.roles, name = "Snapped")
+    shuffle(members)
+    i = 0
+    while i < len(members)//2:
+        await client.add_roles(members[i], role)
+        i += 1
+
+@client.command(description = "Undoes the snap",
+    brief = "Creates chaos",
+    pass_context = True)
+async def unsnap(context):
+    server = context.message.server
+    members = list(server.members)
+    role = get(server.roles, name = "Snapped")
+    for member in members:
+        if role in member.roles:
+            await client.remove_roles(member, role)
 
 @client.command(description = "Prints a test message.",
     brief = "Bot test",
