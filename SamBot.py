@@ -7,7 +7,7 @@ from urllib import parse
 from discord.ext import commands
 
 BOT_PREFIX = "$"
-start_message = True    #Set false when testing
+start_message = False    #Set false when testing
 
 # TODO ?stats - # messages, number of new joins over time (Generate image and upload?)
 # TODO add "Roll" for dice roll
