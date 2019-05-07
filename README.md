@@ -1,2 +1,2 @@
 # sambot
-Our fun discord bot!
+Our fun discord boot!
